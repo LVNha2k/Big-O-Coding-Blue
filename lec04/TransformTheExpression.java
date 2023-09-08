@@ -1,0 +1,110 @@
+package lec04;
+
+import java.io.*;
+import java.util.*;
+
+// Transform the Expression SPOJ
+public class TransformTheExpression {
+	MyReader rd = new MyReader();
+	PrintWriter pw = new PrintWriter(System.out);
+	int t;
+	String exp;
+
+	void solve() throws IOException {
+		t = rd.nextInt();
+		Stack<Character> stack = new Stack<>();
+
+		for (char symbol; t-- > 0;) {
+			exp = rd.next();
+
+			for (int i = 0; i < exp.length(); i++)
+				if (Character.isLetter(symbol = exp.charAt(i)))
+					pw.print(symbol);
+				else if (symbol == ')')
+					pw.print(stack.pop());
+				else if (symbol != '(')
+					stack.push(symbol);
+
+			pw.println();
+		}
+		pw.close();
+	}
+
+	public static void main(String[] args) throws IOException {
+		new TransformTheExpression().solve();
+	}
+
+	static class MyReader {
+		final int BUFFER_SIZE = 1 << 16;
+		BufferedInputStream bin;
+		byte buffer[], c;
+		int bufferPointer, bytesRead;
+		boolean isWindows;
+		final String FILE = "inp.txt";
+
+		public MyReader() {
+			this(false);
+		}
+
+		public MyReader(boolean file) {
+			try {
+				bin = new BufferedInputStream(file ? new FileInputStream(FILE) : System.in, BUFFER_SIZE);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			buffer = new byte[BUFFER_SIZE];
+			bufferPointer = bytesRead = 0;
+			isWindows = System.getProperty("os.name").startsWith("Win");
+		}
+
+		public String next() throws IOException {
+			StringBuilder sb = new StringBuilder();
+			while ((c = read()) <= ' ')
+				;
+			do {
+				sb.append((char) c);
+			} while ((c = read()) > ' ');
+			if (isWindows && c == 13)
+				read();
+			return sb.toString();
+		}
+
+		public int nextInt() throws IOException {
+			int ret = 0;
+			c = read();
+			while (c <= ' ')
+				c = read();
+			boolean neg = (c == '-');
+			if (neg)
+				c = read();
+			do {
+				ret = ret * 10 + c - '0';
+			} while ((c = read()) >= '0' && c <= '9');
+			if (isWindows && c == 13)
+				read();
+			return neg ? -ret : ret;
+		}
+
+		public boolean isEOF() {
+			return buffer[0] == -1;
+		}
+
+		private byte read() throws IOException {
+			if (bufferPointer == bytesRead)
+				fillBuffer();
+			return buffer[bufferPointer++];
+		}
+
+		private void fillBuffer() throws IOException {
+			bytesRead = bin.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+			if (bytesRead == -1)
+				buffer[0] = -1;
+		}
+
+		public void close() throws IOException {
+			if (bin == null)
+				return;
+			bin.close();
+		}
+	}
+}
